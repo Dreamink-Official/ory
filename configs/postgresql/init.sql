@@ -1,0 +1,3 @@
+CREATE SCHEMA hydra;
+CREATE SCHEMA kratos;
+CREATE SCHEMA keto;
