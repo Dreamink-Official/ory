@@ -142,8 +142,8 @@ services:
       KRATOS_PUBLIC_URL: http://kratos:4433/
       PORT: '4435'
       SECURITY_MODE: jwks
-    ports:
-    - "4435:4435"
+    # ports:
+    # - "4435:4435"
     networks:
       intranet: null
 
@@ -169,7 +169,7 @@ services:
     volumes:
       - oathkeeper-config:/etc/config/oathkeeper
     networks:
-      intranet: {}
+      intranet: null
 
   consent:
     image: oryd/hydra-login-consent-node:v2.1.1
