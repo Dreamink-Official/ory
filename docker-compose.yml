@@ -5,11 +5,11 @@ services:
     image: postgres:15.2
     restart: on-failure
     environment:
-      POSTGRES_DB: orydb
+      POSTGRES_MULTIPLE_DATABASES: kratos,keto,hydra
       POSTGRES_PASSWORD: dbpassword
       POSTGRES_USER: dbuser
     volumes:
-        - ./configs/postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./configs/postgresql/create-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
         - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
@@ -23,7 +23,7 @@ services:
     restart: on-failure
     command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=kratos&max_conns=20&max_idle_conns=4
+      DSN: postgres://dbuser:dbpassword@database:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
     volumes:
       - kratos-config:/etc/config/kratos
     networks:
@@ -36,7 +36,7 @@ services:
     restart: on-failure
     command: migrate up -y
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=kratos
+      DSN: postgres://dbuser:dbpassword@database:5432/keto?sslmode=disable
       LOG_LEVEL: debug
     links:
       - database:database
@@ -52,7 +52,7 @@ services:
     restart: on-failure
     command: migrate -c /etc/config/hydra/hydra.yml sql -e --yes
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=hydra&max_conns=20&max_idle_conns=4
+      DSN: postgres://dbuser:dbpassword@database:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
     volumes:
       - hydra-config:/etc/config/hydra
     networks:
@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
     command: serve -c /etc/config/hydra/hydra.yml all --dev
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=hydra&max_conns=20&max_idle_conns=4
+      DSN: postgres://dbuser:dbpassword@database:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4
       TRACING_PROVIDER: jaeger
       TRACING_SERVICE_NAME: Hydra
       TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS: jaeger:6831
@@ -93,7 +93,7 @@ services:
     restart: on-failure
     command: serve -c /home/ory/keto.yml
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=kratos
+      DSN: postgres://dbuser:dbpassword@database:5432/keto?sslmode=disable
       TRACING_PROVIDER: jaeger
       TRACING_SERVICE_NAME: Keto
       TRACING_PROVIDERS_JAEGER_LOCAL_AGENT_ADDRESS: jaeger:6831
@@ -118,7 +118,7 @@ services:
     restart: unless-stopped
     command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
     environment:
-      DSN: postgres://dbuser:dbpassword@database:5432/orydb?sslmode=disable&search_path=kratos&max_conns=20&max_idle_conns=4
+      DSN: postgres://dbuser:dbpassword@database:5432/kratos?sslmode=disable&max_conns=20&max_idle_conns=4
       LOG_LEVEL: trace
       SERVE_PUBLIC_BASE_URL: http://127.0.0.1:4455/.ory/kratos/public/
       TRACING_PROVIDER: jaeger
@@ -142,8 +142,6 @@ services:
       KRATOS_PUBLIC_URL: http://kratos:4433/
       PORT: '4435'
       SECURITY_MODE: jwks
-    # ports:
-    # - "4435:4435"
     networks:
       intranet: null
 

@@ -14,7 +14,7 @@
   authenticators:
     - handler: noop
   authorizer:
-    - handler: allow
+    handler: allow
   mutators:
     - handler: noop
 
@@ -23,15 +23,17 @@
     preserve_host: true
     url: 'http://kratos-selfservice-ui-node:4435'
   match:
-    url: "http://127.0.0.1:4455/<{registration,welcome,recovery,verification,login,error,health/{alive,ready},**.css,**.js,**.png,**.svg,**.woff*}>"
+    url: >-
+      http://127.0.0.1:4455/<{registration,welcome,recovery,verification,login,error,health/{alive,ready},**.css,**.js,**.png,**.svg,**.woff*}>
     methods:
       - GET
   authenticators:
     - handler: anonymous
   authorizer:
-    - handler: allow
+    handler: allow
   mutators:
     - handler: noop
+    
 - id: 'ory:kratos-selfservice-ui-node:protected'
   upstream:
     preserve_host: true
@@ -43,7 +45,7 @@
   authenticators:
     - handler: cookie_session
   authorizer:
-    - handler: allow
+    handler: allow
   mutators:
     - handler: id_token
   errors:
