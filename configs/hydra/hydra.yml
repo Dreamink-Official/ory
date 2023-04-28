@@ -1,17 +1,11 @@
+log:
+  leak_sensitive_values: true
+  format: text
+  level: debug
+
 serve:
   cookies:
     same_site_mode: Lax
-
-urls:
-  self:
-    issuer: http://127.0.0.1:4444
-  consent: http://127.0.0.1:3000/consent
-  login: http://127.0.0.1:3000/login
-  logout: http://127.0.0.1:3000/logout
-
-secrets:
-  system:
-    - youReallyNeedToChangeThis
 
 oidc:
   subject_identifiers:
@@ -20,3 +14,29 @@ oidc:
       - public
     pairwise:
       salt: youReallyNeedToChangeThis
+
+urls:
+  login: http://127.0.0.1:4455/login
+  logout: http://127.0.0.1:4455/logout
+  post_logout_redirect: http://127.0.0.1:4455
+  consent: http://127.0.0.1:3000/consent
+  error: http://127.0.0.1:4455/error
+  self:
+    admin: http://127.0.0.1:4445
+    public: http://127.0.0.1:4444
+    issuer: http://127.0.0.1:4444
+
+ttl:
+  access_token: 1h
+  refresh_token: 1h
+  id_token: 1h
+  auth_code: 1h
+
+oauth2:
+  expose_internal_errors: true
+
+secrets:
+  cookie:
+    - youReallyNeedToChangeThis
+  system:
+    - youReallyNeedToChangeThis

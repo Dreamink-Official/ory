@@ -2,6 +2,11 @@ version: v0.11.0
 
 dsn: memory
 
+log:
+  level: debug
+  format: text
+  leak_sensitive_values: true
+
 serve:
   public:
     base_url: http://127.0.0.1:4433/
@@ -14,7 +19,6 @@ selfservice:
   default_browser_return_url: http://127.0.0.1:4455/
   allowed_return_urls:
     - http://127.0.0.1:4455
-
   methods:
     password:
       enabled: true
@@ -28,36 +32,36 @@ selfservice:
       enabled: true
     code:
       enabled: true
+    webauthn:
+      enabled: false
+    oidc:
+      enabled: false
+    profile:
+      enabled: true
 
   flows:
     error:
       ui_url: http://127.0.0.1:4455/error
-
     settings:
       ui_url: http://127.0.0.1:4455/settings
       privileged_session_max_age: 15m
       required_aal: highest_available
-
     recovery:
       enabled: true
       ui_url: http://127.0.0.1:4455/recovery
       use: code
-
     verification:
       enabled: true
       ui_url: http://127.0.0.1:4455/verification
       use: code
       after:
         default_browser_return_url: http://127.0.0.1:4455/
-
     logout:
       after:
         default_browser_return_url: http://127.0.0.1:4455/login
-
     login:
       ui_url: http://127.0.0.1:4455/login
       lifespan: 10m
-
     registration:
       lifespan: 10m
       ui_url: http://127.0.0.1:4455/registration
@@ -67,10 +71,10 @@ selfservice:
             - hook: session
             - hook: show_verification_ui
 
-log:
-  level: debug
-  format: text
-  leak_sensitive_values: true
+oauth2_provider:
+  url: http://hydra:4445
+  headers: 
+    Authorization: Bearer some-token
 
 secrets:
   cookie:
