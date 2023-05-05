@@ -76,6 +76,9 @@ oauth2_provider:
   headers: 
     Authorization: Bearer some-token
 
+session:
+  lifespan: 30s
+
 secrets:
   cookie:
     - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE
